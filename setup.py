@@ -18,7 +18,6 @@ setup(
     description="A Model Context Protocol (MCP) server for AWS Athena",
     long_description=long_description,
     long_description_content_type="text/markdown",
-    url="https://github.com/your-username/aws-athena-mcp",
     package_dir={"": "src"},
     packages=find_packages(where="src"),
     classifiers=[

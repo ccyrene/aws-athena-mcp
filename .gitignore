@@ -317,6 +317,7 @@ bandit-report.json
 # Virtual environments (additional patterns)
 pyvenv.cfg
 pip-selfcheck.json
+test_venv/
 
 # Package management
 poetry.toml

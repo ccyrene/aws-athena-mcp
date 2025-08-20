@@ -9,9 +9,8 @@ import asyncio
 import logging
 from typing import Optional
 
-import mcp.server.stdio
+from mcp import server
 from mcp.server import NotificationOptions, Server
-from mcp.server.models import InitializationOptions
 
 from .core.config import config
 from .core.exceptions import AthenaClientError, AthenaCredentialsError
@@ -50,8 +49,7 @@ class AthenaMCPServer:
             # Create tool handlers
             self.tool_handlers = AthenaToolHandlers(self.athena_service)
 
-            # Test connectivity asynchronously when server starts
-            asyncio.create_task(client_manager.test_connectivity())
+            # Note: Connectivity test will be done when the event loop is running
 
         except (AthenaClientError, AthenaCredentialsError) as e:
             self.logger.error(f"❌ Failed to initialize Athena services: {e}")
@@ -84,19 +82,12 @@ class AthenaMCPServer:
         """Run the MCP server."""
         self.logger.info("🚀 Starting MCP Athena server...")
         try:
-            async with mcp.server.stdio.stdio_server() as (read_stream, write_stream):
+            async with server.stdio.stdio_server() as (read_stream, write_stream):
                 self.logger.info("📡 Stdio server started, waiting for connections...")
                 await self.server.run(
                     read_stream,
                     write_stream,
-                    InitializationOptions(
-                        server_name=config.SERVER_NAME,
-                        server_version=config.SERVER_VERSION,
-                        capabilities=self.server.get_capabilities(
-                            notification_options=NotificationOptions(),
-                            experimental_capabilities={},
-                        ),
-                    ),
+                    self.server.create_initialization_options()
                 )
         except Exception as e:
             self.logger.error(f"❌ Critical server error: {e}")
