@@ -19,7 +19,7 @@ class AthenaConfig:
     DEFAULT_REGION = "us-east-1"
     DEFAULT_DATABASE = "default"
     AWS_DATA_CATALOG = "AwsDataCatalog"
-
+    AWS_ATHENA_WORKGROUP = "primary"
     # Display configuration
     MAX_DISPLAY_ROWS = 20
 
@@ -43,6 +43,11 @@ class AthenaConfig:
     def aws_profile(self) -> Optional[str]:
         """Get AWS profile from environment."""
         return os.getenv("AWS_PROFILE")
+
+    @property
+    def aws_athena_workgroup(self) -> str:
+        """Get AWS Athena workgroup from environment with fallback to default."""
+        return os.getenv("AWS_ATHENA_WORKGROUP", os.getenv("ATHENA_WORKGROUP", self.AWS_ATHENA_WORKGROUP))
 
     @property
     def s3_output_location(self) -> Optional[str]:

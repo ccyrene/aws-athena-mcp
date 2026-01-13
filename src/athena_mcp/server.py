@@ -44,7 +44,7 @@ class AthenaMCPServer:
             client_manager = AthenaClientManager(athena_client)
 
             # Create Athena service
-            self.athena_service = AthenaService(athena_client, config.s3_output_location)
+            self.athena_service = AthenaService(athena_client, config.aws_athena_workgroup, config.s3_output_location)
 
             # Create tool handlers
             self.tool_handlers = AthenaToolHandlers(self.athena_service)

@@ -32,7 +32,7 @@ from ..utils.validators import S3OutputValidator
 class AthenaService:
     """Service class for AWS Athena operations."""
 
-    def __init__(self, client: boto3.client, s3_output_location: str):
+    def __init__(self, client: boto3.client, athena_workgroup: str, s3_output_location: str):
         """
         Initialize the Athena service.
 
@@ -41,6 +41,7 @@ class AthenaService:
             s3_output_location: S3 location for query results
         """
         self.client = client
+        self.athena_workgroup = athena_workgroup
         self.s3_output_location = s3_output_location
         self.logger = logging.getLogger(__name__)
 
@@ -90,7 +91,9 @@ class AthenaService:
             return create_error_response(f"❌ Unexpected error listing databases: {str(e)}")
 
     async def execute_query(
-        self, query: str, database: str = config.DEFAULT_DATABASE
+        self,
+        query: str,
+        database: str = config.DEFAULT_DATABASE
     ) -> List[types.TextContent]:
         """
         Execute an Athena query and return formatted results.
@@ -108,7 +111,7 @@ class AthenaService:
         """
         truncated_query = truncate_query_for_log(query)
         self.logger.info(f"🔍 Executing query on database '{database}': {truncated_query}")
-
+        self.logger.info(f"ℹ️ AWS Athena Workgroup: {self.athena_workgroup}")
         # Validate S3 output location
         if not S3OutputValidator.is_valid(self.s3_output_location):
             error_msg = S3OutputValidator.get_error_message(self.s3_output_location)
@@ -119,6 +122,7 @@ class AthenaService:
             self.logger.info("📤 Sending query to Athena...")
             response = self.client.start_query_execution(
                 QueryString=query,
+                WorkGroup=self.athena_workgroup,
                 QueryExecutionContext={"Database": database},
                 ResultConfiguration={"OutputLocation": self.s3_output_location},
             )
@@ -166,7 +170,8 @@ class AthenaService:
             return create_error_response(f"❌ Unexpected error executing query: {str(e)}")
 
     async def describe_database_structure(
-        self, database: str = config.DEFAULT_DATABASE
+        self,
+        database: str = config.DEFAULT_DATABASE
     ) -> List[types.TextContent]:
         """
         Describe the structure of a database by listing its tables.
@@ -178,7 +183,7 @@ class AthenaService:
             List of TextContent with database structure information
         """
         self.logger.info(f"📊 Describing structure of database '{database}'...")
-
+        self.logger.info(f"ℹ️ AWS Athena Workgroup: {self.athena_workgroup}")
         # Validate S3 output location
         if not S3OutputValidator.is_valid(self.s3_output_location):
             error_msg = S3OutputValidator.get_error_message(self.s3_output_location)
@@ -189,6 +194,7 @@ class AthenaService:
             self.logger.info(f"📤 Executing: {query}")
             response = self.client.start_query_execution(
                 QueryString=query,
+                WorkGroup=self.athena_workgroup,
                 QueryExecutionContext={"Database": database},
                 ResultConfiguration={"OutputLocation": self.s3_output_location},
             )
