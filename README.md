@@ -62,6 +62,7 @@ To use this server in MCP clients like Cursor, add the following configuration t
       "env": {
         "AWS_ACCESS_KEY_ID": "your-access-key",
         "AWS_SECRET_ACCESS_KEY": "your-secret-key",
+        "AWS_ATHENA_WORKGROUP": "your-workgroup",
         "AWS_REGION": "us-east-1",
         "AWS_S3_OUTPUT_LOCATION": "s3://your-bucket/athena-results/"
       }
@@ -80,6 +81,7 @@ To use this server in MCP clients like Cursor, add the following configuration t
   "env": {
     "AWS_ACCESS_KEY_ID": "AKIA...",
     "AWS_SECRET_ACCESS_KEY": "your-secret-key",
+    "AWS_ATHENA_WORKGROUP": "your-workgroup",
     "AWS_REGION": "us-east-1",
     "AWS_S3_OUTPUT_LOCATION": "s3://your-bucket/results/"
   }
@@ -94,6 +96,7 @@ To use this server in MCP clients like Cursor, add the following configuration t
   "env": {
     "AWS_PROFILE": "your-aws-profile",
     "AWS_REGION": "us-east-1",
+    "AWS_ATHENA_WORKGROUP": "your-workgroup",
     "AWS_S3_OUTPUT_LOCATION": "s3://your-bucket/results/"
   }
 }
@@ -119,6 +122,7 @@ To use this server in MCP clients like Cursor, add the following configuration t
 - **AWS_ACCESS_KEY_ID**: AWS access key (if not using profile)
 - **AWS_SECRET_ACCESS_KEY**: AWS secret key (if not using profile)
 - **AWS_PROFILE**: Locally configured AWS profile
+- **AWS_ATHENA_WORKGROUP**: Athena workgroup (default: primary)
 - **AWS_REGION** or **AWS_DEFAULT_REGION**: AWS region (default: us-east-1)
 - **LOG_LEVEL**: Logging level (DEBUG, INFO, WARNING, ERROR)
 
@@ -151,6 +155,9 @@ Configure the following environment variables:
 # AWS credentials (optional if using profile)
 export AWS_ACCESS_KEY_ID="your-access-key"
 export AWS_SECRET_ACCESS_KEY="your-secret-key"
+
+# AWS athena workgroup
+export AWS_ATHENA_WORKGROUP="your-workgroup"
 
 # AWS region
 export AWS_DEFAULT_REGION="us-east-1"
@@ -281,4 +288,4 @@ Consult the [TROUBLESHOOTING.md](TROUBLESHOOTING.md) file for common issues and 
 
 ## 📄 License
 
-This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details. 
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
